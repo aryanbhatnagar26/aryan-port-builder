@@ -1,10 +1,82 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import { Mail, Linkedin, Github, Instagram, MapPin, Phone } from "lucide-react";
 
 const Contact = () => {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Basic validation
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.message) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Simulate form submission
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      toast({
+        title: "Message Sent Successfully! 🎉",
+        description: "Thank you for reaching out. I'll get back to you within 24 hours.",
+      });
+
+      // Reset form
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        subject: "",
+        message: ""
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to Send Message",
+        description: "Something went wrong. Please try again or contact me directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const contactInfo = [
     {
       icon: Mail,
@@ -52,57 +124,88 @@ const Contact = () => {
                 Send Me a Message
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-4">
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">
+                      First Name *
+                    </label>
+                    <Input 
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      placeholder="John" 
+                      className="transition-smooth" 
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">
+                      Last Name *
+                    </label>
+                    <Input 
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      placeholder="Doe" 
+                      className="transition-smooth" 
+                      required
+                    />
+                  </div>
+                </div>
+                
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">
-                    First Name
+                    Email Address *
                   </label>
-                  <Input placeholder="John" className="transition-smooth" />
+                  <Input 
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="john@example.com" 
+                    className="transition-smooth" 
+                    required
+                  />
                 </div>
+                
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">
-                    Last Name
+                    Subject
                   </label>
-                  <Input placeholder="Doe" className="transition-smooth" />
+                  <Input 
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    placeholder="Project Collaboration Inquiry" 
+                    className="transition-smooth" 
+                  />
                 </div>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
-                  Email Address
-                </label>
-                <Input 
-                  type="email" 
-                  placeholder="john@example.com" 
-                  className="transition-smooth" 
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
-                  Subject
-                </label>
-                <Input 
-                  placeholder="Project Collaboration Inquiry" 
-                  className="transition-smooth" 
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
-                  Message
-                </label>
-                <Textarea 
-                  placeholder="Tell me about your project or how we can work together..."
-                  className="min-h-[120px] transition-smooth resize-none"
-                />
-              </div>
-              
-              <Button className="w-full hero-button">
-                <Mail className="mr-2 h-5 w-5" />
-                Send Message
-              </Button>
+                
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">
+                    Message *
+                  </label>
+                  <Textarea 
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    placeholder="Tell me about your project or how we can work together..."
+                    className="min-h-[120px] transition-smooth resize-none"
+                    required
+                  />
+                </div>
+                
+                <Button 
+                  type="submit" 
+                  className="w-full hero-button"
+                  disabled={isSubmitting}
+                >
+                  <Mail className="mr-2 h-5 w-5" />
+                  {isSubmitting ? "Sending..." : "Send Message"}
+                </Button>
+              </form>
             </CardContent>
           </Card>
 
