@@ -25,15 +25,15 @@ const Hero = () => {
           />
         </div>
         
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-blue-100 to-slate-300 bg-clip-text text-transparent">
           Aryan Bhatnagar
         </h1>
         
-        <p className="text-xl md:text-2xl mb-4 text-blue-100 font-medium">
+        <p className="text-xl md:text-2xl mb-4 text-slate-200 font-medium">
           Data Analyst | BI Developer | Lifelong Learner
         </p>
         
-        <p className="text-lg md:text-xl mb-12 text-white/80 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg md:text-xl mb-12 text-slate-300 max-w-2xl mx-auto leading-relaxed">
           Turning raw data into actionable insights with Python, SQL, and advanced BI tools
         </p>
         
